@@ -1,0 +1,7 @@
+{
+    "workbench.editor.autoLockGroups": {
+        "workbench.editor.processExplorer": false
+    },
+    "workbench.editor.tabActionUnpinVisibility": false,
+    "workbench.editor.tabActionCloseVisibility": false
+}
