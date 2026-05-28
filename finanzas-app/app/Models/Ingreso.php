@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ingreso extends Model
 {
-    //
+    protected $fillable = ['user_id', 'categoria_id', 'monto', 'descripcion', 'fecha'];
 }

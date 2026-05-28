@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Gasto extends Model
 {
-    protected $fillable = [user_id];
+    protected $fillable = ['user_id','categoria_id', 'monto', 'descripcion', 'fecha'];
 }  

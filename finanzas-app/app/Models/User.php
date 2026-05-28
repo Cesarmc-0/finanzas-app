@@ -10,11 +10,21 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Categoria;
+use App\Models\Gasto;
+use App\Models\Ingreso;
 
 class User extends Authenticatable
 {
     public function categorias(){
         return $this->hasMany(Categoria::class);
+    }
+
+    public function gastos(){
+        return $this->hasMany(Gasto::class);
+    }
+
+    public function ingresos(){
+        return $this->hasMany(Ingreso::class);
     }
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
