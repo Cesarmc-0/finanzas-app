@@ -25,7 +25,7 @@ export default function PasswordInput({ name, value, onChange, placeholder = 'â€
                 onChange={onChange}
                 required
                 placeholder={placeholder}
-                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm text-slate-800 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                className="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-2.5 pr-10 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
             />
             <button
                 type="button"

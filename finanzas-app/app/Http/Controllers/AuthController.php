@@ -30,6 +30,8 @@ class AuthController extends Controller
         'token' => $token,
         'user' => $user,
     ], 201);
+
+    $user->assignRole('user');
     }
 
 
