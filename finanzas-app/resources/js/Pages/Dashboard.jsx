@@ -1,26 +1,40 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
-    return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Dashboard
-                </h2>
-            }
-        >
-            <Head title="Dashboard" />
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
-                            You're logged in!
-                        </div>
-                    </div>
+    const handleLogout = async () => {
+        await logout();
+        navigate('/login');
+    };
+
+    return (
+        <div className="min-h-screen bg-slate-900 text-white">
+
+            {/* Navbar */}
+            <nav className="bg-slate-800 border-b border-slate-700 px-6 py-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <span className="text-xl">💰</span>
+                    <span className="font-bold text-white">Mi Finanzas</span>
                 </div>
-            </div>
-        </AuthenticatedLayout>
+                <div className="flex items-center gap-4">
+                    <span className="text-sm text-slate-400">{user?.name}</span>
+                    <button
+                        onClick={handleLogout}
+                        className="text-sm text-slate-400 hover:text-white transition"
+                    >
+                        Cerrar sesión
+                    </button>
+                </div>
+            </nav>
+
+            {/* Contenido */}
+            <main className="max-w-5xl mx-auto px-6 py-10">
+                <h2 className="text-2xl font-bold mb-2">Bienvenido, {user?.name} 👋</h2>
+                <p className="text-slate-400">Tu resumen financiero aparecerá aquí.</p>
+            </main>
+        </div>
     );
 }
