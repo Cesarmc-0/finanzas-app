@@ -22,7 +22,7 @@ export function useIngresos(){
     }, []);
 
 
-    const total = ingresos.reduce((acumulador, item) => acumulador + item.monto, 0);
+    const total = ingresos.reduce((acumulador, item) => acumulador + Number(item.monto), 0);
 
     const crear = async (data) => {
         await api.post('/ingresos', data);

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useIngresos } from '../hooks/useIngresos';
 import PageHeader from '../Components/PageHeader';
+import BackButton from '../Components/BackButton';
 import EmptyState from '../Components/EmptyState';
 import IngresoModal from '../Components/IngresoModal';
 
@@ -12,7 +13,7 @@ export default function Ingresos() {
     const [ingresoSeleccionado, setIngresoSeleccionado] = useState(null);
 
     useEffect(() => {
-        api.get('/categorias').then(({ data }) => setCategorias(data));
+        api.get('/categorias').then(({ data }) => setCategorias(data.filter(c => c.tipo === 'ingreso')));
     }, []);
 
     const abrirCrear = () => {
@@ -43,6 +44,7 @@ export default function Ingresos() {
         <div className="min-h-screen bg-slate-950 p-6">
             <div className="max-w-4xl mx-auto">
 
+                <BackButton label="Dashboard"/>
                 <PageHeader
                     titulo="Ingresos"
                     subtitulo={`Total: $${total.toFixed(2)}`}

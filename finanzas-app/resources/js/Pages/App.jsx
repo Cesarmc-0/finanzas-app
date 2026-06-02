@@ -4,6 +4,8 @@ import Login from './Login';
 import Register from './Register';
 import Dashboard from './Dashboard';
 import Ingresos from './Ingresos';
+import Categorias from './Categorias';
+import Gastos from './Gastos';
 
 function PrivateRoute({ children }) {
     const { user } = useAuth();
@@ -30,6 +32,22 @@ export default function App() {
                         element={
                             <PrivateRoute>
                                 <Ingresos />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path = "/categorias"
+                        element = {
+                            <PrivateRoute>
+                                <Categorias/>
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/gastos"
+                        element={
+                            <PrivateRoute>
+                                <Gastos />
                             </PrivateRoute>
                         }
                     />
