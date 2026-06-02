@@ -11,4 +11,21 @@ class Gasto extends Model
     public function categoria(){
         return $this->belongsTo(Categoria::class);
     }
+
+    public static function porMes($userId){
+        return self::where('user_id', $userId)
+        ->selectRaw("TO_CHAR(fecha, 'Mon') as mes, SUM(monto) as total")
+        ->groupByRaw("TO_CHAR(fecha, 'Mon'), EXTRACT(MONTH FROM fecha)")
+        ->orderByRaw("EXTRACT(MONTH FROM fecha)")
+        ->get();
+    }
+
+  public static function porCategoria($userId) {
+      return self::where('user_id', $userId)
+          ->selectRaw('categoria_id, SUM(monto) as total')
+          ->with('categoria')
+          ->groupBy('categoria_id')
+          ->get();
+  }
+
 }  

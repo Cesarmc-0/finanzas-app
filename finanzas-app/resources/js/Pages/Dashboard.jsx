@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
 import AppLayout from '../Layouts/AppLayout';
 import StatCard from '../Components/StatCard';
-import api from '../services/api';
+import { useDashboard } from '../hooks/useDashboard';
 import {
     BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
     PieChart, Pie, Cell, Legend
@@ -9,50 +8,26 @@ import {
 
 const COLORS = ['#4f46e5', '#f43f5e', '#f59e0b', '#06b6d4', '#8b5cf6', '#10b981'];
 
-const fmt = (n) => `$${Number(n).toLocaleString('es-CO', { minimumFractionDigits: 2 })}`;
-
-const mesCorto = (fecha) =>
-    new Date(fecha).toLocaleDateString('es-CO', { month: 'short' });
+const fmt = (n) => `$${Number(n).toLocaleString('es-CO', { minimumFractionDigits: 0 })}`;
 
 export default function Dashboard() {
-    const [ingresos,   setIngresos]   = useState([]);
-    const [gastos,     setGastos]     = useState([]);
-    const [categorias, setCategorias] = useState([]);
+    const { datos, loading } = useDashboard();
 
-    useEffect(() => {
-        api.get('/ingresos').then(r => setIngresos(r.data));
-        api.get('/gastos').then(r => setGastos(r.data));
-        api.get('/categorias').then(r => setCategorias(r.data));
-    }, []);
-
-    const totalIngresos = ingresos.reduce((s, i) => s + parseFloat(i.monto), 0);
-    const totalGastos   = gastos.reduce((s, g) => s + parseFloat(g.monto), 0);
+    const totalIngresos = parseFloat(datos?.totales?.ingresos ?? 0);
+    const totalGastos   = parseFloat(datos?.totales?.gastos ?? 0);
     const balance       = totalIngresos - totalGastos;
     const ahorro        = totalIngresos > 0 ? Math.round((balance / totalIngresos) * 100) : 0;
     const positivo      = balance >= 0;
 
-    // Bar chart — agrupar por mes
-    const mesesMap = {};
-    ingresos.forEach(i => {
-        const m = mesCorto(i.fecha);
-        if (!mesesMap[m]) mesesMap[m] = { mes: m, ingresos: 0, gastos: 0 };
-        mesesMap[m].ingresos += parseFloat(i.monto);
+    const barData = (datos?.por_mes?.ingresos ?? []).map(i => {
+        const g = datos.por_mes.gastos.find(g => g.mes === i.mes);
+        return { mes: i.mes, ingresos: parseFloat(i.total), gastos: parseFloat(g?.total ?? 0) };
     });
-    gastos.forEach(g => {
-        const m = mesCorto(g.fecha);
-        if (!mesesMap[m]) mesesMap[m] = { mes: m, ingresos: 0, gastos: 0 };
-        mesesMap[m].gastos += parseFloat(g.monto);
-    });
-    const barData = Object.values(mesesMap);
 
-    // Pie chart — gastos por categoría
-    const gastosMap = {};
-    gastos.forEach(g => {
-        const cat = categorias.find(c => c.id === g.categoria_id);
-        const nombre = cat?.nombre ?? 'Sin categoría';
-        gastosMap[nombre] = (gastosMap[nombre] || 0) + parseFloat(g.monto);
-    });
-    const pieData = Object.entries(gastosMap).map(([name, value]) => ({ name, value }));
+    const pieData = (datos?.por_categoria ?? []).map(c => ({
+        name: c.categoria?.nombre ?? 'Sin categoría',
+        value: parseFloat(c.total),
+    }));
 
     return (
         <AppLayout>
