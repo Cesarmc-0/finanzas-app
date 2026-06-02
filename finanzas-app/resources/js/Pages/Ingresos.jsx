@@ -7,6 +7,7 @@ import BackButton from '../Components/BackButton';
 import EmptyState from '../Components/EmptyState';
 import IngresoModal from '../Components/IngresoModal';
 import SearchInput from '../Components/SearchInput';
+import { formatMonto } from '../utils/format';
 
 export default function Ingresos() {
     const { ingresos, loading, error, total, crear, actualizar, eliminar } = useIngresos();
@@ -54,7 +55,7 @@ export default function Ingresos() {
                 <BackButton label="Dashboard"/>
                 <PageHeader
                     titulo="Ingresos"
-                    subtitulo={`Total: $${total.toFixed(3)}`}
+                    subtitulo={`Total: $${formatMonto(total)}`}
                     botonTexto="+ Nuevo Ingreso"
                     onNuevo={abrirCrear}
                 />
@@ -81,7 +82,7 @@ export default function Ingresos() {
                                 <p className="text-slate-400 text-sm">{ingreso.fecha}</p>
                             </div>
                             <div className="flex items-center gap-4">
-                                <span className="text-indigo-400 font-semibold">${Number(ingreso.monto).toFixed(2)}</span>
+                                <span className="text-indigo-400 font-semibold">${formatMonto(ingreso.monto)}</span>
                                 <button onClick={() => abrirEditar(ingreso)} className="text-slate-400 hover:text-white text-sm">Editar</button>
                                 <button onClick={() => eliminar(ingreso.id)} className="text-rose-400 hover:text-rose-300 text-sm">Eliminar</button>
                             </div>

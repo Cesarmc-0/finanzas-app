@@ -7,6 +7,7 @@ import EmptyState from '../Components/EmptyState';
 import GastoModal from '../Components/GastoModal';
 import BackButton from '../Components/BackButton';
 import SearchInput from '../Components/SearchInput';
+import { formatMonto } from '../utils/format';
 
 export default function Gastos() {
     const { gastos, loading, error, total, crear, actualizar, eliminar } = useGastos();
@@ -57,7 +58,7 @@ export default function Gastos() {
 
                 <PageHeader
                     titulo="Gastos"
-                    subtitulo={`Total: $${total.toFixed(2)}`}
+                    subtitulo={`Total: $${formatMonto(total)}`}
                     botonTexto="+ Nuevo Gasto"
                     onNuevo={abrirCrear}
                 />
@@ -84,7 +85,7 @@ export default function Gastos() {
                                 <p className="text-slate-400 text-sm">{gasto.fecha}</p>
                             </div>
                             <div className="flex items-center gap-4">
-                                <span className="text-rose-400 font-semibold">${Number(gasto.monto).toFixed(2)}</span>
+                                <span className="text-rose-400 font-semibold">${formatMonto(gasto.monto)}</span>
                                 <button onClick={() => abrirEditar(gasto)} className="text-slate-400 hover:text-white text-sm">Editar</button>
                                 <button onClick={() => eliminar(gasto.id)} className="text-rose-400 hover:text-rose-300 text-sm">Eliminar</button>
                             </div>
