@@ -7,6 +7,9 @@ import EmptyState from '../Components/EmptyState';
 import GastoModal from '../Components/GastoModal';
 import BackButton from '../Components/BackButton';
 import SearchInput from '../Components/SearchInput';
+import ConfirmModal from '../Components/ConfirmModal';
+import { useToast } from '../hooks/useToast';
+import Toast from '../Components/Toast';
 import { formatMonto } from '../utils/format';
 
 export default function Gastos() {
@@ -15,7 +18,8 @@ export default function Gastos() {
     const [modalAbierto, setModalAbierto] = useState(false);
     const [gastoSeleccionado, setGastoSeleccionado] = useState(null);
     const [busqueda, setBusqueda] = useState('');
-
+    const {toast, mostrar} = useToast();
+    const [idAEliminar, setIdAEliminar] = useState(null);
     const gastosFiltrados = gastos.filter(g =>
         g.descripcion?.toLowerCase().includes(busqueda.toLowerCase())
     );
@@ -41,11 +45,19 @@ export default function Gastos() {
         setGastoSeleccionado(null);
     };
 
+    const handleEliminar = async () => {
+        await eliminar(idAEliminar);
+        setIdAEliminar(null);
+        mostrar('Gasto eliminado', 'exito');
+    };
+
     const guardar = async (data) => {
         if (gastoSeleccionado) {
             await actualizar(gastoSeleccionado.id, data);
+            mostrar('Gasto actualizado', 'exito');
         } else {
             await crear(data);
+            mostrar('Gasto creado', 'exito');
         }
         cerrarModal();
     };
@@ -87,7 +99,7 @@ export default function Gastos() {
                             <div className="flex items-center gap-4">
                                 <span className="text-rose-400 font-semibold">${formatMonto(gasto.monto)}</span>
                                 <button onClick={() => abrirEditar(gasto)} className="text-slate-400 hover:text-white text-sm">Editar</button>
-                                <button onClick={() => eliminar(gasto.id)} className="text-rose-400 hover:text-rose-300 text-sm">Eliminar</button>
+                                <button onClick={() => setIdAEliminar(gasto.id)} className="text-rose-400 hover:text-rose-300 text-sm">Eliminar</button>
                             </div>
                         </div>
                     ))}
@@ -103,6 +115,14 @@ export default function Gastos() {
                     onCerrar={cerrarModal}
                 />
             )}
+            {idAEliminar && (
+                <ConfirmModal
+                    mensaje="Esta acción no se puede deshacer."
+                    onConfirmar={handleEliminar}
+                    onCancelar={() => setIdAEliminar(null)}
+                />
+            )}
+            <Toast toast={toast} />
         </AppLayout>
     );
 }

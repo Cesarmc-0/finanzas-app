@@ -7,7 +7,10 @@ import BackButton from '../Components/BackButton';
 import EmptyState from '../Components/EmptyState';
 import IngresoModal from '../Components/IngresoModal';
 import SearchInput from '../Components/SearchInput';
+import Toast from '../Components/Toast';
+import ConfirmModal from '../Components/ConfirmModal';
 import { formatMonto } from '../utils/format';
+import { useToast } from '../hooks/useToast';
 
 export default function Ingresos() {
     const { ingresos, loading, error, total, crear, actualizar, eliminar } = useIngresos();
@@ -15,6 +18,8 @@ export default function Ingresos() {
     const [modalAbierto, setModalAbierto] = useState(false);
     const [ingresoSeleccionado, setIngresoSeleccionado] = useState(null);
     const [busqueda, setBusqueda] = useState('');
+    const { toast, mostrar } = useToast();
+    const [idAEliminar, setIdAEliminar] = useState(null);
 
     const ingresosFiltrados = ingresos.filter(i =>
         i.descripcion?.toLowerCase().includes(busqueda.toLowerCase())
@@ -38,6 +43,11 @@ export default function Ingresos() {
         setModalAbierto(false);
         setIngresoSeleccionado(null);
     };
+    const handleEliminar = async () => {
+        await eliminar(idAEliminar);
+        setIdAEliminar(null);
+        mostrar('Ingreso eliminado', 'exito');
+    };
 
     const guardar = async (data) => {
         if (ingresoSeleccionado) {
@@ -45,6 +55,7 @@ export default function Ingresos() {
         } else {
             await crear(data);
         }
+        mostrar('Guardado exitosamente', 'exito');
         cerrarModal();
     };
 
@@ -84,7 +95,7 @@ export default function Ingresos() {
                             <div className="flex items-center gap-4">
                                 <span className="text-indigo-400 font-semibold">${formatMonto(ingreso.monto)}</span>
                                 <button onClick={() => abrirEditar(ingreso)} className="text-slate-400 hover:text-white text-sm">Editar</button>
-                                <button onClick={() => eliminar(ingreso.id)} className="text-rose-400 hover:text-rose-300 text-sm">Eliminar</button>
+                                <button onClick={() => setIdAEliminar(ingreso.id)} className="text-rose-400 hover:text-rose-300 text-sm">Eliminar</button>
                             </div>
                         </div>
                     ))}
@@ -100,6 +111,14 @@ export default function Ingresos() {
                     onCerrar={cerrarModal}
                 />
             )}
+            {idAEliminar && (
+                <ConfirmModal
+                    mensaje="Esta acción no se puede deshacer."
+                    onConfirmar={handleEliminar}
+                    onCancelar={() => setIdAEliminar(null)}
+                />
+            )}
+            <Toast toast={toast} />
         </AppLayout>
     );
 }

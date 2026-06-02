@@ -6,12 +6,17 @@ import EmptyState from '../Components/EmptyState';
 import CategoriaModal from '../Components/CategoriaModal';
 import BackButton from '../Components/BackButton';
 import SearchInput from '../Components/SearchInput';
+import Toast from '../Components/Toast';
+import ConfirmModal from '../Components/ConfirmModal';
+import { useToast } from '../hooks/useToast';
 
   export default function Categorias(){
     const { items: categorias, loading, error, crear, actualizar, eliminar } = useTransacciones('categorias');
     const [modalAbierto, setModalAbierto] = useState(false);
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
     const [busqueda, setBusqueda] = useState('');
+    const { toast, mostrar } = useToast();
+    const [idAEliminar, setIdAEliminar] = useState(null);
 
     const categoriasFiltradas = categorias.filter(c =>
         c.nombre?.toLowerCase().includes(busqueda.toLowerCase())
@@ -33,11 +38,19 @@ import SearchInput from '../Components/SearchInput';
     setCategoriaSeleccionada(null);
     };    
 
+    const handleEliminar = async () => {
+        await eliminar(idAEliminar);
+        setIdAEliminar(null);
+        mostrar('Categoría eliminada', 'exito');
+    };
+
     const guardar = async (data) => {
         if (categoriaSeleccionada) {
             await actualizar(categoriaSeleccionada.id, data);
+            mostrar('Categoría actualizada', 'exito');
         } else {
             await crear(data);
+            mostrar('Categoría creada', 'exito');
         }
         cerrarModal();
     };
@@ -81,7 +94,7 @@ import SearchInput from '../Components/SearchInput';
                             </div>
                             <div className="flex items-center gap-4">
                                 <button onClick={() => abrirEditar(categoria)} className="text-slate-400 hover:text-white text-sm">Editar</button>
-                                <button onClick={() => eliminar(categoria.id)} className="text-rose-400 hover:text-rose-300 text-sm">Eliminar</button>
+                                <button onClick={() => setIdAEliminar(categoria.id)} className="text-rose-400 hover:text-rose-300 text-sm">Eliminar</button>
                             </div>
                         </div>
                     ))}
@@ -96,6 +109,14 @@ import SearchInput from '../Components/SearchInput';
                     onCerrar={cerrarModal}
                 />
             )}
+            {idAEliminar && (
+                <ConfirmModal
+                    mensaje="Esta acción no se puede deshacer."
+                    onConfirmar={handleEliminar}
+                    onCancelar={() => setIdAEliminar(null)}
+                />
+            )}
+            <Toast toast={toast} />
         </AppLayout>
     );
 }
