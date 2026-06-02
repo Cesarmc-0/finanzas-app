@@ -5,11 +5,17 @@ import PageHeader from '../Components/PageHeader';
 import EmptyState from '../Components/EmptyState';
 import CategoriaModal from '../Components/CategoriaModal';
 import BackButton from '../Components/BackButton';
+import SearchInput from '../Components/SearchInput';
 
   export default function Categorias(){
     const { items: categorias, loading, error, crear, actualizar, eliminar } = useTransacciones('categorias');
     const [modalAbierto, setModalAbierto] = useState(false);
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+    const [busqueda, setBusqueda] = useState('');
+
+    const categoriasFiltradas = categorias.filter(c =>
+        c.nombre?.toLowerCase().includes(busqueda.toLowerCase())
+    );
 
 
     const abrirCrear = () => {
@@ -49,10 +55,14 @@ import BackButton from '../Components/BackButton';
                     onNuevo={abrirCrear}
                 />
 
+                <div className="mb-4">
+                    <SearchInput value={busqueda} onChange={setBusqueda} placeholder="Buscar categoría..." />
+                </div>
+
                 {loading && <p className="text-slate-400 text-sm">Cargando...</p>}
                 {error && <p className="text-rose-400 text-sm">{error}</p>}
 
-                {!loading && categorias.length === 0 && (
+                {!loading && categoriasFiltradas.length === 0 && (
                     <EmptyState
                         titulo="No tienes categorías aún"
                         mensaje="Crea tu primera categoría para usarla en ingresos y gastos."
@@ -60,7 +70,7 @@ import BackButton from '../Components/BackButton';
                 )}
 
                 <div className="flex flex-col gap-3">
-                    {categorias.map((categoria) => (
+                    {categoriasFiltradas.map((categoria) => (
                         <div key={categoria.id} className="bg-slate-800 border border-slate-700 rounded-xl px-5 py-4 flex justify-between items-center">
                             <div className="flex items-center gap-3">
                                 <span className="w-3 h-3 rounded-full" style={{ backgroundColor: categoria.color }}></span>

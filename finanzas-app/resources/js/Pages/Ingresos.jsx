@@ -6,12 +6,18 @@ import PageHeader from '../Components/PageHeader';
 import BackButton from '../Components/BackButton';
 import EmptyState from '../Components/EmptyState';
 import IngresoModal from '../Components/IngresoModal';
+import SearchInput from '../Components/SearchInput';
 
 export default function Ingresos() {
     const { ingresos, loading, error, total, crear, actualizar, eliminar } = useIngresos();
     const [categorias, setCategorias] = useState([]);
     const [modalAbierto, setModalAbierto] = useState(false);
     const [ingresoSeleccionado, setIngresoSeleccionado] = useState(null);
+    const [busqueda, setBusqueda] = useState('');
+
+    const ingresosFiltrados = ingresos.filter(i =>
+        i.descripcion?.toLowerCase().includes(busqueda.toLowerCase())
+    );
 
     useEffect(() => {
         api.get('/categorias').then(({ data }) => setCategorias(data.filter(c => c.tipo === 'ingreso')));
@@ -48,15 +54,19 @@ export default function Ingresos() {
                 <BackButton label="Dashboard"/>
                 <PageHeader
                     titulo="Ingresos"
-                    subtitulo={`Total: $${total.toFixed(2)}`}
+                    subtitulo={`Total: $${total.toFixed(3)}`}
                     botonTexto="+ Nuevo Ingreso"
                     onNuevo={abrirCrear}
                 />
 
+                <div className="mb-4">
+                    <SearchInput value={busqueda} onChange={setBusqueda} placeholder="Buscar ingreso..." />
+                </div>
+
                 {loading && <p className="text-slate-400 text-sm">Cargando...</p>}
                 {error && <p className="text-rose-400 text-sm">{error}</p>}
 
-                {!loading && ingresos.length === 0 && (
+                {!loading && ingresosFiltrados.length === 0 && (
                     <EmptyState
                         titulo="No tienes ingresos aún"
                         mensaje="Registra tu primer ingreso para empezar a llevar el control."
@@ -64,7 +74,7 @@ export default function Ingresos() {
                 )}
 
                 <div className="flex flex-col gap-3">
-                    {ingresos.map((ingreso) => (
+                    {ingresosFiltrados.map((ingreso) => (
                         <div key={ingreso.id} className="bg-slate-800 border border-slate-700 rounded-xl px-5 py-4 flex justify-between items-center">
                             <div>
                                 <p className="text-white font-medium">{ingreso.descripcion || 'Sin descripción'}</p>

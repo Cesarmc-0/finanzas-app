@@ -6,12 +6,18 @@ import PageHeader from '../Components/PageHeader';
 import EmptyState from '../Components/EmptyState';
 import GastoModal from '../Components/GastoModal';
 import BackButton from '../Components/BackButton';
+import SearchInput from '../Components/SearchInput';
 
 export default function Gastos() {
     const { gastos, loading, error, total, crear, actualizar, eliminar } = useGastos();
     const [categorias, setCategorias] = useState([]);
     const [modalAbierto, setModalAbierto] = useState(false);
     const [gastoSeleccionado, setGastoSeleccionado] = useState(null);
+    const [busqueda, setBusqueda] = useState('');
+
+    const gastosFiltrados = gastos.filter(g =>
+        g.descripcion?.toLowerCase().includes(busqueda.toLowerCase())
+    );
 
     useEffect(() => {
         api.get('/categorias').then(({ data }) =>
@@ -56,10 +62,14 @@ export default function Gastos() {
                     onNuevo={abrirCrear}
                 />
 
+                <div className="mb-4">
+                    <SearchInput value={busqueda} onChange={setBusqueda} placeholder="Buscar gasto..." />
+                </div>
+
                 {loading && <p className="text-slate-400 text-sm">Cargando...</p>}
                 {error && <p className="text-rose-400 text-sm">{error}</p>}
 
-                {!loading && gastos.length === 0 && (
+                {!loading && gastosFiltrados.length === 0 && (
                     <EmptyState
                         titulo="No tienes gastos aún"
                         mensaje="Registra tu primer gasto para empezar a llevar el control."
@@ -67,7 +77,7 @@ export default function Gastos() {
                 )}
 
                 <div className="flex flex-col gap-3">
-                    {gastos.map((gasto) => (
+                    {gastosFiltrados.map((gasto) => (
                         <div key={gasto.id} className="bg-slate-800 border border-slate-700 rounded-xl px-5 py-4 flex justify-between items-center">
                             <div>
                                 <p className="text-white font-medium">{gasto.descripcion || 'Sin descripción'}</p>
