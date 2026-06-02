@@ -91,6 +91,7 @@ export default function Ingresos() {
                             <div>
                                 <p className="text-white font-medium">{ingreso.descripcion || 'Sin descripción'}</p>
                                 <p className="text-slate-400 text-sm">{ingreso.fecha}</p>
+                                <p className="text-indigo-300 text-xs">{ingreso.categoria?.nombre}</p>
                             </div>
                             <div className="flex items-center gap-4">
                                 <span className="text-indigo-400 font-semibold">${formatMonto(ingreso.monto)}</span>

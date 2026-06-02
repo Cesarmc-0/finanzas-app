@@ -11,7 +11,7 @@ class GastoController extends Controller
      */
     public function index()
     {
-        $gastos =auth()->user()->gastos;
+        $gastos =auth()->user()->gastos()->with('categoria')->get();
 
         return response()->json($gastos);
     }

@@ -10,8 +10,8 @@ class IngresoController extends Controller
  
     public function index()
     {
-        $ingreso = auth()->user()->ingresos;
-        return response()->json($ingreso);
+        $ingresos = auth()->user()->ingresos()->with('categoria')->get();
+        return response()->json($ingresos);
     }
 
 
