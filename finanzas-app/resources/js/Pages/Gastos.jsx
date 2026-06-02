@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useGastos } from '../hooks/useGastos';
+import AppLayout from '../Layouts/AppLayout';
 import PageHeader from '../Components/PageHeader';
 import EmptyState from '../Components/EmptyState';
 import GastoModal from '../Components/GastoModal';
@@ -43,7 +44,7 @@ export default function Gastos() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 p-6">
+        <AppLayout>
             <div className="max-w-4xl mx-auto">
 
                 <BackButton label="Dashboard" />
@@ -91,6 +92,6 @@ export default function Gastos() {
                     onCerrar={cerrarModal}
                 />
             )}
-        </div>
+        </AppLayout>
     );
 }

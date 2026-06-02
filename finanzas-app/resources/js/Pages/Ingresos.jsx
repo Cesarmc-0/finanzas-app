@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useIngresos } from '../hooks/useIngresos';
+import AppLayout from '../Layouts/AppLayout';
 import PageHeader from '../Components/PageHeader';
 import BackButton from '../Components/BackButton';
 import EmptyState from '../Components/EmptyState';
@@ -41,7 +42,7 @@ export default function Ingresos() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 p-6">
+        <AppLayout>
             <div className="max-w-4xl mx-auto">
 
                 <BackButton label="Dashboard"/>
@@ -88,6 +89,6 @@ export default function Ingresos() {
                     onCerrar={cerrarModal}
                 />
             )}
-        </div>
+        </AppLayout>
     );
 }

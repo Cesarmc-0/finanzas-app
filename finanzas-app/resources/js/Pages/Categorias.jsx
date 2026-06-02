@@ -1,9 +1,10 @@
 import { useState } from 'react';
-  import { useTransacciones } from '../hooks/useTransacciones';
-  import PageHeader from '../Components/PageHeader';
-  import EmptyState from '../Components/EmptyState';
-  import CategoriaModal from '../Components/CategoriaModal';
-  import BackButton from '../Components/BackButton';
+import { useTransacciones } from '../hooks/useTransacciones';
+import AppLayout from '../Layouts/AppLayout';
+import PageHeader from '../Components/PageHeader';
+import EmptyState from '../Components/EmptyState';
+import CategoriaModal from '../Components/CategoriaModal';
+import BackButton from '../Components/BackButton';
 
   export default function Categorias(){
     const { items: categorias, loading, error, crear, actualizar, eliminar } = useTransacciones('categorias');
@@ -36,7 +37,7 @@ import { useState } from 'react';
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 p-6">
+        <AppLayout>
             <div className="max-w-4xl mx-auto">
 
                 <BackButton label="Dashboard" />
@@ -85,6 +86,6 @@ import { useState } from 'react';
                     onCerrar={cerrarModal}
                 />
             )}
-        </div>
+        </AppLayout>
     );
-  }
+}
