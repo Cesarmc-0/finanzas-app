@@ -2,9 +2,9 @@
   import api from '../services/api';
 
   export function useTransacciones(endpoint) {
-      const [items,   setItems]   = useState([]);
-      const [loading, setLoading] = useState(true);
-      const [error,   setError]   = useState(null);
+    const [items,   setItems]   = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error,   setError]   = useState(null);
 
     const cargar = async () =>{
         try {

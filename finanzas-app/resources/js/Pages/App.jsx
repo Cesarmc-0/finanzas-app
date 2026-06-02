@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from '../context/AuthContext';
 import Login from './Login';
 import Register from './Register';
 import Dashboard from './Dashboard';
+import Ingresos from './Ingresos';
 
 function PrivateRoute({ children }) {
     const { user } = useAuth();
@@ -21,6 +22,14 @@ export default function App() {
                         element={
                             <PrivateRoute>
                                 <Dashboard />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/ingresos"
+                        element={
+                            <PrivateRoute>
+                                <Ingresos />
                             </PrivateRoute>
                         }
                     />
