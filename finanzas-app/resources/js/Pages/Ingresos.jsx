@@ -11,6 +11,7 @@ import Toast from '../Components/Toast';
 import ConfirmModal from '../Components/ConfirmModal';
 import { formatMonto } from '../utils/format';
 import { useToast } from '../hooks/useToast';
+import { usePaginacion } from '../hooks/usePaginacion';
 
 export default function Ingresos() {
     const { ingresos, loading, error, total, crear, actualizar, eliminar } = useIngresos();
@@ -24,6 +25,8 @@ export default function Ingresos() {
     const ingresosFiltrados = ingresos.filter(i =>
         i.descripcion?.toLowerCase().includes(busqueda.toLowerCase())
     );
+
+    const { itemsPagina, pagina, totalPaginas, siguiente, anterior } = usePaginacion(ingresosFiltrados);
 
     useEffect(() => {
         api.get('/categorias').then(({ data }) => setCategorias(data.filter(c => c.tipo === 'ingreso')));
@@ -86,7 +89,7 @@ export default function Ingresos() {
                 )}
 
                 <div className="flex flex-col gap-3">
-                    {ingresosFiltrados.map((ingreso) => (
+                    {itemsPagina.map((ingreso) => (
                         <div key={ingreso.id} className="bg-slate-800 border border-slate-700 rounded-xl px-5 py-4 flex justify-between items-center">
                             <div>
                                 <p className="text-white font-medium">{ingreso.descripcion || 'Sin descripción'}</p>
@@ -101,6 +104,26 @@ export default function Ingresos() {
                         </div>
                     ))}
                 </div>
+
+                {totalPaginas > 1 && (
+                    <div className="flex items-center justify-between mt-6">
+                        <button
+                            onClick={anterior}
+                            disabled={pagina === 1}
+                            className="px-4 py-2 text-sm rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                        >
+                            ← Anterior
+                        </button>
+                        <span className="text-slate-400 text-sm">Página {pagina} de {totalPaginas}</span>
+                        <button
+                            onClick={siguiente}
+                            disabled={pagina === totalPaginas}
+                            className="px-4 py-2 text-sm rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                        >
+                            Siguiente →
+                        </button>
+                    </div>
+                )}
 
             </div>
 
