@@ -49,7 +49,7 @@ export default function AppLayout({ children }) {
                     </nav>
 
                     <div className="flex items-center gap-6 shrink-0">
-                        <p className="text-slate-200 text-sm font-semibold tracking-tight">{greeting()}, {user?.name}</p>
+                        <p className="text-slate-200 text-sm font-semibold tracking-tight">{`${greeting()}, ${user?.name}`}</p>
                         <button onClick={handleLogout} className="text-sm text-slate-500 hover:text-rose-400 transition">
                             Salir
                         </button>
