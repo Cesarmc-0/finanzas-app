@@ -18,7 +18,7 @@ export default function Login() {
         setLoading(true);
         try {
             await login(form.email, form.password);
-            navigate('/dashboard');
+            navigate('/verify');
         } catch (err) {
             setError(err.response?.data?.message ?? 'Error al conectar con el servidor');
         } finally {

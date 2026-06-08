@@ -6,6 +6,7 @@ import Dashboard from './Dashboard';
 import Ingresos from './Ingresos';
 import Categorias from './Categorias';
 import Gastos from './Gastos';
+import VerifyCode from './verifyCode';
 
 function PrivateRoute({ children }) {
     const { user } = useAuth();
@@ -51,6 +52,7 @@ export default function App() {
                             </PrivateRoute>
                         }
                     />
+                    <Route path="/verify" element={<VerifyCode />} />
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
             </BrowserRouter>
