@@ -9,6 +9,8 @@ use App\Http\Controllers\ResumenController;
 
 Route:: post('/login', [AuthController::class,'login']);
 
+Route::post('/verify', [AuthController::class,'verify']);
+
 Route::post('/register',[AuthController::class,'register']);
 
 Route:: middleware('auth:sanctum')->group(function(){

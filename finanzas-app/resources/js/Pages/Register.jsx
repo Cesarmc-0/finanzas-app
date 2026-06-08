@@ -2,22 +2,32 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import PasswordInput from '../Components/PasswordInput';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { registerSchema } from '../utils/schemas';
 
 export default function Register() {
-    const { register } = useAuth();
+    const { register : registerUser } = useAuth();
     const navigate = useNavigate();
-    const [form, setForm] = useState({ name: '', email: '', password: '', password_confirmation: '' });
+    const { register, handleSubmit, watch, formState: { errors } } = useForm({
+        resolver: zodResolver(registerSchema)
+    });
+    const password = watch('password') ?? '';
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+    const requisitos = [
+        { label: 'Mínimo 8 caracteres', ok: password.length >= 8 },
+        { label: 'Una mayúscula', ok: /[A-Z]/.test(password) },
+        { label: 'Una minúscula', ok: /[a-z]/.test(password) },
+        { label: 'Un carácter especial', ok: /[^a-zA-Z0-9]/.test(password) },
+    ];
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const onSubmit = async (data) => {
         setError('');
         setLoading(true);
         try {
-            await register(form.name, form.email, form.password, form.password_confirmation);
+            await registerUser(data.name, data.email, data.password, data.password_confirmation);
             navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.message ?? 'Error al conectar con el servidor');
@@ -51,9 +61,9 @@ export default function Register() {
             <div className="w-full lg:w-1/2 flex items-center justify-center px-8">
                 <div className="w-full max-w-sm">
 
-                    <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8">
+                    <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6">
                         <h1 className="text-xl font-bold text-white mb-1">Crear cuenta</h1>
-                        <p className="text-slate-400 text-sm mb-7">Completa los datos para comenzar.</p>
+                        <p className="text-slate-400 text-sm mb-5">Completa los datos para comenzar.</p>
 
                         {error && (
                             <div className="mb-5 text-sm text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-lg px-4 py-3">
@@ -61,24 +71,36 @@ export default function Register() {
                             </div>
                         )}
 
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-1.5">Nombre</label>
-                                <input type="text" name="name" value={form.name} onChange={handleChange} required placeholder="Tu nombre"
-                                    className="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-1.5">Email</label>
-                                <input type="email" name="email" value={form.email} onChange={handleChange} required placeholder="tu@email.com"
-                                    className="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" />
+                        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-3">
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-300 mb-1">Nombre</label>
+                                    <input type="text" placeholder="Tu nombre" {...register('name')}
+                                        className="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" />
+                                    {errors.name && <p className="text-rose-400 text-xs mt-1">{errors.name.message}</p>}
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-300 mb-1">Email</label>
+                                    <input type="email" placeholder="tu@email.com" {...register('email')}
+                                        className="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" />
+                                    {errors.email && <p className="text-rose-400 text-xs mt-1">{errors.email.message}</p>}
+                                </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-300 mb-1.5">Contraseña</label>
-                                <PasswordInput name="password" value={form.password} onChange={handleChange} placeholder="Mínimo 8 caracteres" />
+                                <PasswordInput {...register('password')} />
+                                <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-0.5">
+                                    {requisitos.map((r) => (
+                                        <span key={r.label} className={`text-xs flex items-center gap-1 ${r.ok ? 'text-emerald-400' : 'text-slate-500'}`}>
+                                            {r.ok ? '✓' : '✗'} {r.label}
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-300 mb-1.5">Confirmar contraseña</label>
-                                <PasswordInput name="password_confirmation" value={form.password_confirmation} onChange={handleChange} />
+                                <PasswordInput {...register('password_confirmation')} />
+                                {errors.password_confirmation && <p className="text-rose-400 text-xs mt-1">{errors.password_confirmation.message}</p>}
                             </div>
 
                             <button type="submit" disabled={loading}

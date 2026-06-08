@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
 
 const EyeOpen = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -13,18 +13,16 @@ const EyeClosed = () => (
     </svg>
 );
 
-export default function PasswordInput({ name, value, onChange, placeholder = '••••••••' }) {
+const PasswordInput = forwardRef(({ placeholder = '••••••••', ...props }, ref) => {
     const [show, setShow] = useState(false);
 
     return (
         <div className="relative">
             <input
                 type={show ? 'text' : 'password'}
-                name={name}
-                value={value}
-                onChange={onChange}
-                required
+                ref={ref}
                 placeholder={placeholder}
+                {...props}
                 className="w-full bg-slate-900 border border-slate-600 rounded-xl px-4 py-2.5 pr-10 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
             />
             <button
@@ -36,4 +34,6 @@ export default function PasswordInput({ name, value, onChange, placeholder = '�
             </button>
         </div>
     );
-}
+});
+
+export default PasswordInput;

@@ -3,7 +3,9 @@ import api from '../services/api';
 
 const AuthContext = createContext(null);
 
+
 export function AuthProvider({ children }) {
+    const [pendingEmail, setPendingEmail] =useState(null);
     const [user, setUser] = useState(() => {
         const stored = localStorage.getItem('user');
         return stored ? JSON.parse(stored) : null;
@@ -12,10 +14,16 @@ export function AuthProvider({ children }) {
     //login
     const login = async (email, password) => {
         const { data } = await api.post('/login', { email, password });
+        setPendingEmail(email);
+
+    };
+
+    const verify = async (code) => {
+        const { data } = await api.post('/verify', {email: pendingEmail, codigo: code});
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         setUser(data.user);
-    };
+    }
 
     //Register
 
@@ -34,7 +42,7 @@ export function AuthProvider({ children }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login,register, logout }}>
+        <AuthContext.Provider value={{ user, login,register, logout, verify, pendingEmail }}>
             {children}
         </AuthContext.Provider>
     );

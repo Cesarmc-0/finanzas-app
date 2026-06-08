@@ -26,6 +26,11 @@ class User extends Authenticatable
     public function ingresos(){
         return $this->hasMany(Ingreso::class);
     }
+
+      public static function findByEmail(string $email)
+    {
+        return static::where('email', $email)->first();
+    }
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
