@@ -49,6 +49,18 @@ class User extends Authenticatable
         $user->activo = !$user->activo;
         $user->save();
     }
+
+    public static function getEstadisticas(){
+        $totales = User::count();
+        $activos = User::where('activo', true)->count();
+        $inactivos = User::where('activo', false)->count();
+        return[
+            'total' => $totales,
+            'activos' => $activos,
+            'inactivos' => $inactivos
+        ];
+
+    }
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 

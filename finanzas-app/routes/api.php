@@ -15,6 +15,7 @@ Route::post('/verify', [AuthController::class,'verify']);
 Route::post('/register',[AuthController::class,'register']);
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function(){
+    Route::get('/admin/estadisticas',[AdminController::class, 'estadisticas']);
     Route::get('/admin/usuarios',[AdminController::class,'index']);
     Route::patch('/admin/usuarios/{id}/toggle', [AdminController::class, 'toggleActivo']);
     Route::delete('/admin/usuarios/{id}', [AdminController::class, 'destroy']);

@@ -43,4 +43,8 @@ class AdminController extends Controller
         ]);
     }
 
+    public function estadisticas(){
+        return response()->json(User::getEstadisticas()); 
+    }
+
 }

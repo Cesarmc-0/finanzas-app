@@ -7,10 +7,16 @@ import Ingresos from './Ingresos';
 import Categorias from './Categorias';
 import Gastos from './Gastos';
 import VerifyCode from './verifyCode';
+import AdminUsuarios from './AdminUsuarios';
+import AdminDashboard from './AdminDashboard';
 
 function PrivateRoute({ children }) {
     const { user } = useAuth();
     return user ? children : <Navigate to="/login" replace />;
+}
+function AdminRoute({ children }){
+    const {user} = useAuth();
+    return user && user.rol === 'admin'  ? children : <Navigate to="/dashboard" replace />;
 }
 
 export default function App() {
@@ -52,6 +58,24 @@ export default function App() {
                             </PrivateRoute>
                         }
                     />
+                    <Route
+                        path='/admin/dashboard'
+                        element={
+                            <AdminRoute>
+                                <AdminDashboard />
+                            </AdminRoute>
+                        }
+                    />
+                    <Route
+                        path='/admin/usuarios'
+                        element={
+                            <AdminRoute>
+                                <AdminUsuarios />
+                            </AdminRoute>
+                        }
+                    >
+                        
+                    </Route>
                     <Route path="/verify" element={<VerifyCode />} />
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>

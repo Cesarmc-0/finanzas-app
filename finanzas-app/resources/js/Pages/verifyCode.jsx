@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 
 export default function verifyCode (){
     const navigate = useNavigate();
-    const {verify, pendingEmail } = useAuth();
+    const { verify, pendingEmail, user } = useAuth();
     const [code, setCode] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -16,7 +16,7 @@ export default function verifyCode (){
 
         try {
             await verify(code);
-            navigate('/dashboard');
+             navigate(user.rol === 'admin' ? '/admin/usuarios' : '/dashboard')
         } catch (error) {
             setError(error.response?.data?.message ?? 'Error al conectar con el servidor');
         }finally { setLoading(false); }

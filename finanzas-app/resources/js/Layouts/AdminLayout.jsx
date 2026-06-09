@@ -1,5 +1,6 @@
-import { useAuth } from '../context/AuthContext';
 import { useNavigate, NavLink } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
 
 const NavItem = ({ to, label }) => (
     <NavLink
@@ -23,17 +24,16 @@ const greeting = () => {
     return 'Buenas noches';
 };
 
-export default function AppLayout({ children }) {
-    const { user, logout } = useAuth();
+export default function AdminLayout({ children }) {
     const navigate = useNavigate();
-
+    const { user, logout } = useAuth();
     const handleLogout = async () => {
         await logout();
         navigate('/login');
     };
 
     return (
-        <div className="min-h-screen bg-slate-900">
+       <div className="min-h-screen bg-slate-900">
 
             {/* Navbar */}
             <header className="bg-slate-950 border-b border-slate-700/50 shadow-[0_1px_12px_rgba(0,0,0,0.4)]">
@@ -42,10 +42,8 @@ export default function AppLayout({ children }) {
                     <span className="text-white font-bold text-sm tracking-tight shrink-0">Mi Finanzas</span>
 
                     <nav className="flex items-center gap-1 flex-1 justify-center">
-                        <NavItem to="/dashboard"  label="Dashboard" />
-                        <NavItem to="/ingresos"   label="Ingresos" />
-                        <NavItem to="/gastos"     label="Gastos" />
-                        <NavItem to="/categorias" label="Categorías" />
+                        <NavItem to="/admin/dashboard" label= "Dashboard" />
+                        <NavItem to="/admin/usuarios" label="Usuarios" />
                     </nav>
 
                     <div className="flex items-center gap-6 shrink-0">
@@ -63,4 +61,5 @@ export default function AppLayout({ children }) {
             </main>
         </div>
     );
+
 }

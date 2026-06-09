@@ -21,8 +21,8 @@ export function AuthProvider({ children }) {
     const verify = async (code) => {
         const { data } = await api.post('/verify', {email: pendingEmail, codigo: code});
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        setUser(data.user);
+        localStorage.setItem('user', JSON.stringify({...data.user, rol: data.rol}));
+        setUser({...data.user, rol: data.rol});
     }
 
     //Register
