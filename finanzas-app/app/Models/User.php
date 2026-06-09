@@ -27,9 +27,27 @@ class User extends Authenticatable
         return $this->hasMany(Ingreso::class);
     }
 
-      public static function findByEmail(string $email)
+    public static function findByEmail(string $email)
     {
         return static::where('email', $email)->first();
+    }
+
+    public static function allUsers(){
+        return User::select('id', 'name', 'email', 'activo')->with('roles:id,name')->orderBy('id')->get()->map(function($user){
+            $user->rol = $user->roles->first()->name ?? null;
+            unset($user->roles);
+            return $user;
+        });
+    }
+
+    public static function deleteById($id){
+        return User::find($id)->delete();
+    }
+
+    public static function updateStatusById($id){
+        $user = User::find($id);
+        $user->activo = !$user->activo;
+        $user->save();
     }
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, HasRoles;

@@ -49,10 +49,10 @@ class AuthController extends Controller
 
     public function login(Request $request){
 
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required']
-        ]);
+    $credentials = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required']
+    ]);
 
     if(!Auth::attempt($credentials)){
         return response()->json([
@@ -61,6 +61,12 @@ class AuthController extends Controller
     }
 
     $user = Auth::user();
+    if($user->activo == false){
+        return response()->json([
+            'message' => 'Tu cuenta está desactivada'
+        ], 403);
+    }
+
     $codigo = rand(100000, 999999);
     Cache::put('verification:'. $user->id, $codigo, 300);
     
