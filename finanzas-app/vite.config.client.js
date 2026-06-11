@@ -8,14 +8,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
     plugins: [react()],
-    root: resolve(__dirname, 'resources/js'),
     resolve: {
         alias: {
             '@': resolve(__dirname, 'resources/js'),
         },
     },
     build: {
-        outDir: resolve(__dirname, 'dist'),
+        outDir: 'dist',
         emptyOutDir: true,
     },
 });
