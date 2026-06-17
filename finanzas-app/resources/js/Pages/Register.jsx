@@ -30,7 +30,7 @@ export default function Register() {
             await registerUser(data.name, data.email, data.password, data.password_confirmation);
             navigate('/dashboard');
         } catch (err) {
-            setError(err.response?.data?.message ?? 'Error al conectar con el servidor');
+            handleApiErrors(err, setFieldError, setError);
         } finally {
             setLoading(false);
         }
