@@ -46,7 +46,7 @@ class AuthController extends Controller
      <p>Tu código de verificación es: <strong style='font-size:24px'>{$codigo}</strong></p>
      <p>Válido por 5 minutos.</p>"
     );
-    
+
     return response()->json([
         'token' => $token,
         'user' => $user,
@@ -82,7 +82,14 @@ class AuthController extends Controller
     $codigo = rand(100000, 999999);
     Cache::put('verification:'. $user->id, $codigo, 300);
     
-    Mail::to($user->email)->send(new VerificationCodeMail($codigo));
+    
+    BrevoMailService::send(
+    $user->email,
+    'Tu código de verificación - Mi Finanzas',
+    "<p>Hola {$user->name},</p>
+     <p>Tu código de verificación es: <strong style='font-size:24px'>{$codigo}</strong></p>
+     <p>Válido por 5 minutos.</p>"
+    );
     
     return response()->json([
         'message' => "Código de verificación enviado a tu correo",
