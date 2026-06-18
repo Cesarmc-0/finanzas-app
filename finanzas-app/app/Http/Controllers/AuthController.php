@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
-use App\Mail\VerificationCodeMail;
+use App\Services\BrevoMailService;
 use App\Mail\WelcomeMail;
 use App\Models\User;
 class AuthController extends Controller
@@ -39,8 +39,14 @@ class AuthController extends Controller
 
     $user->assignRole('user');
 
-    Mail::to($user->email)->send(new WelcomeMail($user->name));
-
+    BrevoMailService::send(
+    $user->email,
+    'Tu código de verificación - Mi Finanzas',
+    "<p>Hola {$user->name},</p>
+     <p>Tu código de verificación es: <strong style='font-size:24px'>{$codigo}</strong></p>
+     <p>Válido por 5 minutos.</p>"
+    );
+    
     return response()->json([
         'token' => $token,
         'user' => $user,
