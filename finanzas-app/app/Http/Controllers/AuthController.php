@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Services\BrevoMailService;
 use App\Mail\WelcomeMail;
 use App\Models\User;
+
 class AuthController extends Controller
 
 {   
