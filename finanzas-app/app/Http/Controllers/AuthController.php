@@ -40,6 +40,9 @@ class AuthController extends Controller
 
     $user->assignRole('user');
 
+    $codigo = rand(100000, 999999);
+    Cache::put('verification:'. $user->id, $codigo, 300);
+
     BrevoMailService::send(
     $user->email,
     'Tu código de verificación - Mi Finanzas',
